@@ -185,4 +185,8 @@ constexpr double kHab2 = 0.0898;  // 0.1498
 
 constexpr auto kDt = 0.00505_s;
 }  // namespace Constants
+// Raspberry Pi Vision Constants
+constexpr uint16_t kRpiPort = 5001;
+constexpr uint32_t kRpiIP = (10 << 24) | (35 << 16) | (12 << 8) | 3;
+
 }  // namespace frc3512

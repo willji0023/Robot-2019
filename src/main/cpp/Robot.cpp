@@ -6,7 +6,7 @@
 
 namespace frc3512 {
 
-Robot::Robot() : PublishNode("Robot") {
+Robot::Robot() : PublishNode("Robot"){
     m_logger.AddLogSink(fileSink);
     m_logger.Subscribe(m_climber);
     m_logger.Subscribe(m_drivetrain);
