@@ -2,6 +2,7 @@
 
 #include "subsystems/Drivetrain.hpp"
 
+#include <algorithm>
 #include <cmath>
 #include <limits>
 #include <string>
@@ -12,7 +13,8 @@ using namespace frc3512;
 using namespace frc3512::Constants::Drivetrain;
 using namespace frc3512::Constants::Robot;
 
-Drivetrain::Drivetrain() : PublishNode("Drivetrain") {
+Drivetrain::Drivetrain(frc::PowerDistributionPanel& pdp)
+    : PublishNode("Drivetrain"), m_pdp(pdp) {
     m_drive.SetDeadband(kJoystickDeadband);
 
     m_leftGrbx.Set(0.0);
@@ -35,7 +37,25 @@ Drivetrain::Drivetrain() : PublishNode("Drivetrain") {
 }
 
 void Drivetrain::Drive(double throttle, double turn, bool isQuickTurn) {
-    m_drive.CurvatureDrive(throttle, turn, isQuickTurn);
+    constexpr double kMaxCurrent = 20.0;
+
+    auto output = m_drive.CurvatureDrive(throttle, turn, isQuickTurn);
+
+    // Left motor current limiting
+    double leftCurrent = m_pdp.GetCurrent(kLeftMasterPort);
+    if (leftCurrent >= kMaxCurrent) {
+        output.left = (kMaxCurrent * kR - m_leftEncoder.GetRate() / kKv) / 12.0;
+    }
+
+    // Right motor current limiting
+    double rightCurrent = m_pdp.GetCurrent(kRightMasterPort);
+    if (rightCurrent >= kMaxCurrent) {
+        output.right =
+            (kMaxCurrent * kR - m_rightEncoder.GetRate() / kKv) / 12.0;
+    }
+
+    m_leftGrbx.Set(output.left);
+    m_rightGrbx.Set(output.right);
 }
 
 void Drivetrain::SetLeftManual(double value) { m_leftGrbx.Set(value); }
@@ -85,13 +105,11 @@ void Drivetrain::EnableController() {
     m_lastTime = std::chrono::steady_clock::now();
     m_controllerThread.StartPeriodic(Constants::kDt);
     m_controller.Enable();
-    m_drive.SetSafetyEnabled(false);
 }
 
 void Drivetrain::DisableController() {
     m_controllerThread.Stop();
     m_controller.Disable();
-    m_drive.SetSafetyEnabled(true);
 }
 
 bool Drivetrain::IsControllerEnabled() const {

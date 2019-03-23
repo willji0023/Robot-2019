@@ -6,15 +6,16 @@
 
 #include <frc/ADXRS450_Gyro.h>
 #include <frc/Encoder.h>
+#include <frc/PowerDistributionPanel.h>
 #include <frc/RTNotifier.h>
 #include <frc/Solenoid.h>
 #include <frc/Spark.h>
 #include <frc/SpeedControllerGroup.h>
-#include <frc/drive/DifferentialDrive.h>
 
 #include "Constants.hpp"
 #include "communications/PublishNode.hpp"
 #include "controllers/DrivetrainController.hpp"
+#include "frc3512/drive/DifferentialDrive.h"
 #include "subsystems/SubsystemBase.hpp"
 
 namespace frc3512 {
@@ -24,7 +25,13 @@ namespace frc3512 {
  */
 class Drivetrain : public SubsystemBase, public PublishNode {
 public:
-    Drivetrain();
+    /**
+     * Constructs a Drivetrain.
+     *
+     * @param pdp The robot's power distribution panel.
+     */
+    explicit Drivetrain(frc::PowerDistributionPanel& pdp);
+
     Drivetrain(const Drivetrain&) = delete;
     Drivetrain& operator=(const Drivetrain&) = delete;
 
@@ -130,7 +137,7 @@ private:
                                 Constants::Drivetrain::kRightEncoderB, false,
                                 frc::Encoder::EncodingType::k1X};
 
-    frc::DifferentialDrive m_drive{m_leftGrbx, m_rightGrbx};
+    frc3512::DifferentialDrive m_drive;
 
     // Gyro used for angle PID
     frc::ADXRS450_Gyro m_gyro;
@@ -148,6 +155,8 @@ private:
 
     std::chrono::steady_clock::time_point m_startTime =
         std::chrono::steady_clock::time_point::min();
+
+    frc::PowerDistributionPanel& m_pdp;
 };
 
 }  // namespace frc3512

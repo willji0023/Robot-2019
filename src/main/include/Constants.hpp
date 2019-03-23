@@ -68,6 +68,12 @@ constexpr double kDpP = (2.0 * wpi::math::pi * kWheelRadius.to<double>()) *
 
 // Solenoid Ports
 constexpr int kShifterPort = 1;
+
+// Drivetrain physical constants
+constexpr double kR = 12.0 / 89.0;
+constexpr double kFreeSpeed = 5840.0 / 60.0 * 2.0 * wpi::math::pi;
+constexpr double kFreeCurrent = 3.0;
+constexpr double kKv = kFreeSpeed / (12.0 - kR * kFreeCurrent);
 }  // namespace Drivetrain
 
 namespace Climber {

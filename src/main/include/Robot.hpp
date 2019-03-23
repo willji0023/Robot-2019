@@ -39,7 +39,7 @@ public:
 private:
     frc::PowerDistributionPanel m_pdp;
     Climber m_climber{m_pdp};
-    Drivetrain m_drivetrain;
+    Drivetrain m_drivetrain{m_pdp};
     Elevator m_elevator;
     Logger m_logger;
     Intake m_intake;
