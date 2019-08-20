@@ -15,6 +15,7 @@
 
 #include "Tree.hpp"
 #include "communications/PublishNodeBase.hpp"
+#include "SubscriptionTree.hpp"
 
 namespace frc3512 {
 
