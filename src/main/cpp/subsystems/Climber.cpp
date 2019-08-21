@@ -16,7 +16,6 @@ Climber::Climber(frc::PowerDistributionPanel& pdp)
     m_encoder.SetDistancePerPulse(kDpP);
     m_lift.SetInverted(true);
     m_timer.Start();
-    Subscribe(*this);
 }
 
 void Climber::SetDriveVoltage(double voltage) { m_drive.Set(voltage); }
