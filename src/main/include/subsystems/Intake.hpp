@@ -16,10 +16,10 @@ public:
     enum class MotorState { kIntake, kOuttake, kIdle };
     enum class SolenoidState { kOpen, kClose };
 
-    Intake();
+    Intake() = default;
 
-    Intake(const Intake&) = delete;
-    Intake& operator=(const Intake&) = delete;
+    Intake(Intake&&) = default;
+    Intake& operator=(Intake&&) = default;
 
     /**
      * Sets the intake's motors to spin inward or outward.

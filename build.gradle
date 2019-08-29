@@ -111,6 +111,10 @@ model {
                 exportedHeaders {
                     srcDirs += ['src/test/include', 'src/test/include/frc']
                 }
+
+                exportedHeaders {
+                    srcDirs += ['src/test/include']
+		}
             }
 
             wpi.deps.wpilib(it)

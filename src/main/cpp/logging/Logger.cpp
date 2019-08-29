@@ -6,7 +6,7 @@
 
 using namespace frc3512;
 
-Logger::Logger() : Logger::PublishNode("Logger") { ResetInitialTime(); }
+Logger::Logger(){ ResetInitialTime(); }
 
 void Logger::Log(LogEvent event) {
     event.SetInitialTime(m_initialTime);

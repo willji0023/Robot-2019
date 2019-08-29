@@ -11,7 +11,7 @@ using namespace frc3512;
 using namespace frc3512::Constants::Climber;
 
 Climber::Climber(frc::PowerDistributionPanel& pdp)
-    : PublishNode("Climber"), m_pdp(pdp) {
+    : m_pdp(pdp) {
     m_encoder.SetReverseDirection(true);
     m_encoder.SetDistancePerPulse(kDpP);
     m_lift.SetInverted(true);

@@ -11,7 +11,7 @@ using namespace frc3512;
 using namespace frc3512::Constants::FourBarLift;
 using namespace std::chrono_literals;
 
-FourBarLift::FourBarLift() : PublishNode("FourBarLift") {
+FourBarLift::FourBarLift(){
     m_grbx.Set(0.0);
     m_encoder.SetDistancePerPulse(kDpP);
     EnablePeriodic();

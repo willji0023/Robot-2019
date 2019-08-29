@@ -11,7 +11,7 @@ using namespace frc3512;
 using namespace frc3512::Constants::Elevator;
 using namespace std::chrono_literals;
 
-Elevator::Elevator() : PublishNode("Elevator") {
+Elevator::Elevator() {
     m_grbx.SetSmartCurrentLimit(60);
     m_grbx.SetInverted(true);
     m_grbx.Set(0.0);

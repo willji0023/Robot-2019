@@ -5,8 +5,6 @@
 using namespace frc3512;
 using namespace frc3512::Constants::Intake;
 
-Intake::Intake() : PublishNode("Intake") {}
-
 void Intake::SetMotors(MotorState motorState) {
     if (motorState == MotorState::kIntake) {
         m_leftMotor.Set(-0.75);
