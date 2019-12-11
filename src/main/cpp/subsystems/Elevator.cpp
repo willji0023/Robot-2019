@@ -74,7 +74,7 @@ void Elevator::SubsystemPeriodic() {
 }
 
 void Elevator::ProcessMessage(const ButtonPacket& message) {
-    if (message.topic == "Robot/AppendageStick2" && message.button == 3 &&
+    if (message.topic == "Robot/AppendageStick" && message.button == 3 &&
         message.pressed) {
         SetGoal(kFloorHeight);
     } else if (message.topic == "Robot/AppendageStick" &&
@@ -95,8 +95,9 @@ void Elevator::ProcessMessage(const ButtonPacket& message) {
     } else if (message.topic == "Robot/AppendageStick" && message.button == 8 &&
                message.pressed) {
         SetGoal(kTopCargo);
-    } else if (message.topic == "Robot/AppendageStick2" &&
-               message.button == 2 && message.pressed) {
+    }
+    if (message.topic == "Robot/AppendageStick" && message.button == 2 &&
+        message.pressed) {
         SetGoal(kCargoShip);
     }
 }
@@ -120,4 +121,9 @@ void Elevator::ProcessMessage(const CommandPacket& message) {
     } else if (message.topic == "Climber/ScoringProfile") {
         m_controller.SetScoringIndex();
     }
+}
+
+void Elevator::ProcessMessage(const HIDPacket& message) {
+    if (message.y3 > 0.25) SetGoal(kFloorHeight);
+    if (message.y3 > 0.25) SetGoal(kFloorHeight);
 }
