@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2019 FRC Team 3512. All Rights Reserved.
+// Copyright (c) 2018-2020 FRC Team 3512. All Rights Reserved.
 
 #include "controllers/ElevatorController.hpp"
 
@@ -7,7 +7,12 @@
 using namespace frc3512;
 using namespace frc3512::Constants::Elevator;
 
-ElevatorController::ElevatorController() { m_y.setZero(); }
+ElevatorController::ElevatorController()
+    : LinearController{"Elevator", std::tuple{ControllerLabel{"Position", "m"}},
+                       std::tuple{ControllerLabel{"Velocity", "m/s"}},
+                       std::tuple{ControllerLabel{"Voltage", "V"}}} {
+    m_y.setZero();
+}
 
 void ElevatorController::Enable() { m_isEnabled = true; }
 
@@ -93,9 +98,7 @@ double ElevatorController::VelocityReference() {
 }
 
 void ElevatorController::Update() {
-    elevatorLogger.Log(EstimatedPosition(), EstimatedVelocity(),
-                       PositionReference(), ControllerVoltage(),
-                       VelocityReference());
+    Plot();
 
     frc::TrapezoidProfile<units::meters>::State references = {
         units::meter_t(m_nextR(0, 0)),
@@ -127,4 +130,22 @@ void ElevatorController::Reset() {
     m_scoreObserver.Reset();
     m_climbObserver.Reset();
     m_nextR.setZero();
+}
+
+const Eigen::Matrix<double, 2, 1>& ElevatorController::GetReferences() const {
+    return m_nextR;
+}
+
+const Eigen::Matrix<double, 2, 1>& ElevatorController::GetStates() const {
+    const auto& observer = m_climbing ? m_climbObserver : m_scoreObserver;
+    return observer.Xhat();
+}
+
+const Eigen::Matrix<double, 1, 1>& ElevatorController::GetInputs() const {
+    auto& controller = m_climbing ? m_climbController : m_scoreController;
+    return controller.U();
+}
+
+const Eigen::Matrix<double, 1, 1>& ElevatorController::GetOutputs() const {
+    return m_y;
 }

@@ -12,10 +12,11 @@
 #include <frc/trajectory/TrapezoidProfile.h>
 
 #include "Constants.hpp"
+#include "controllers/LinearController.hpp"
 
 namespace frc3512 {
 
-class ElevatorController {
+class ElevatorController : public LinearController<2, 1, 1> {
 public:
     // State tolerances in meters and meters/sec respectively.
     static constexpr double kPositionTolerance = 0.05;
@@ -102,6 +103,11 @@ public:
      */
     void Reset();
 
+    const Eigen::Matrix<double, 2, 1>& GetReferences() const override;
+    const Eigen::Matrix<double, 2, 1>& GetStates() const override;
+    const Eigen::Matrix<double, 1, 1>& GetInputs() const override;
+    const Eigen::Matrix<double, 1, 1>& GetOutputs() const override;
+
 private:
     // The current sensor measurement.
     Eigen::Matrix<double, 1, 1> m_y;
@@ -165,9 +171,6 @@ private:
     Eigen::Matrix<double, 2, 1> m_nextR;
 
     bool m_atReferences = false;
-
-    frc::CSVLogFile elevatorLogger{"Elevator",   "EstPos (m)",  "EstVel (m/s)",
-                                   "RefPos (m)", "Voltage (V)", "RefVel (m/s)"};
 };
 
 }  // namespace frc3512
