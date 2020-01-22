@@ -1,0 +1,69 @@
+resources:
+  containers:
+  - container: wpilib2020
+    image: wpilib/roborio-cross-ubuntu:2020-18.04
+  - container: raspbian
+    image:  wpilib/raspbian-cross-ubuntu:10-18.04
+  - container: aarch64
+    image:  wpilib/aarch64-cross-ubuntu:bionic-18.04
+  - container: ubuntu
+    image:  wpilib/ubuntu-base:18.04
+
+trigger:
+  batch: true
+  branches:
+    include:
+    - master
+
+stages:
+- stage: Build
+  jobs:
+  - job: Linux_Arm
+    pool:
+      vmImage: 'Ubuntu 16.04'
+
+    container: wpilib2020
+
+    timeoutInMinutes: 0
+
+    steps:
+      - script: |
+          ./make.py build
+          # ./gradlew build -Ponlylinuxathena
+        displayName: 'make.py build'
+
+  - job: Linux_x64_and_tests
+    pool:
+      vmImage: 'Ubuntu 16.04'
+
+    container: ubuntu
+
+    timeoutInMinutes: 0
+
+    steps:
+      - script: |
+          ./make.py ci
+          LD_LIBRARY_PATH=build/wpilibc-cpp-2020.2.2-linuxx86-64/linux/x86-64/shared:build/cameraserver-cpp-2020.2.2-linuxx86-64/linux/x86-64/shared:build/cscore-cpp-2020.2.2-linuxx86-64/linux/x86-64/shared:build/opencv-cpp-3.4.7-2-linuxx86-64/linux/x86-64/shared:build/ntcore-cpp-2020.2.2-linuxx86-64/linux/x86-64/shared:build/wpiutil-cpp-2020.2.2-linuxx86-64/linux/x86-64/shared:build/hal-cpp-2020.2.2-linuxx86-64/linux/x86-64/shared ./build/linuxx86-64/FRCUserProgram
+          # ./gradlew build -Pskiplinuxathena -Ptoolchain-optional-roboRio
+        displayName: 'make.py test'
+
+  - job: Styleguide
+    pool:
+      vmImage: 'Ubuntu 16.04'
+
+    container: ubuntu
+
+    timeoutInMinutes: 0
+
+    steps:
+      - script: |
+          sudo pip3 install wpiformat
+        displayName: 'Install wpiformat'
+      - script: |
+          git checkout -b master
+          wpiformat -clang 6.0
+        displayName: 'Run wpiformat'
+      - script: |
+          # Ensure formatter made no changes
+          git --no-pager diff --exit-code HEAD
+        displayName: 'Check wpiformat output'
