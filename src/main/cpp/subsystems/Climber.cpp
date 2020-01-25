@@ -66,7 +66,7 @@ void Climber::SubsystemPeriodic() {
         case State::kInit: {
             std::lock_guard lock(m_cacheMutex);
             if (m_buttonPacket.topic == "Robot/AppendageStick2" &&
-                m_buttonPacket.button == 7 && m_buttonPacket.pressed) {
+                m_buttonPacket.button == 3 && m_buttonPacket.pressed) {
                 m_buttonPacket.pressed = false;
                 m_thirdLevel = true;
                 CommandPacket message{"ThirdLevel", true};
@@ -74,7 +74,7 @@ void Climber::SubsystemPeriodic() {
                 m_state = State::kThirdLevel;
             }
             if (m_buttonPacket.topic == "Robot/AppendageStick2" &&
-                m_buttonPacket.button == 8 && m_buttonPacket.pressed) {
+                m_buttonPacket.button == 5 && m_buttonPacket.pressed) {
                 m_buttonPacket.pressed = false;
                 m_thirdLevel = false;
                 CommandPacket message{"SecondLevel", true};
@@ -125,6 +125,7 @@ void Climber::SubsystemPeriodic() {
         case State::kDescend: {
             std::lock_guard lock(m_cacheMutex);
             if (m_controller.AtGoal() && m_elevatorStatusPacket.atGoal) {
+                m_buttonPacket = ButtonPacket();
                 m_state = State::kDriveForward;
             }
             break;
@@ -133,8 +134,14 @@ void Climber::SubsystemPeriodic() {
             std::lock_guard lock(m_cacheMutex);
             m_drive.Set(-m_HIDPacket.y1);
             if (m_buttonPacket.topic == "Robot/AppendageStick2" &&
-                m_buttonPacket.button == 9 && m_buttonPacket.pressed) {
+                m_buttonPacket.button == 3 && m_buttonPacket.pressed) {
                 m_buttonPacket.pressed = false;
+                CommandPacket message{"Up", false};
+                Publish(message);
+                m_state = State::kIdle;
+            } else if (m_buttonPacket.topic == "Robot/AppendageStick" &&
+                       m_buttonPacket.button == 5 && m_buttonPacket.pressed) {
+                m_buttonPacket.button = false;
                 CommandPacket message{"Up", false};
                 Publish(message);
                 m_state = State::kIdle;
@@ -150,19 +157,19 @@ void Climber::SubsystemPeriodic() {
 }
 
 void Climber::ProcessMessage(const ButtonPacket& message) {
-    if (message.topic == "Robot/AppendageStick2" && message.button == 7 &&
+    if (message.topic == "Robot/AppendageStick2" && message.button == 3 &&
         message.pressed) {
         std::lock_guard lock(m_cacheMutex);
         m_buttonPacket = message;
     } else if (message.topic == "Robot/AppendageStick2" &&
-               message.button == 8 && message.pressed) {
+               message.button == 5 && message.pressed) {
         std::lock_guard lock(m_cacheMutex);
         m_buttonPacket = message;
-    } else if (message.topic == "Robot/AppendageStick2" &&
+    } /* else if (message.topic == "Robot/AppendageStick2" &&
                message.button == 9 && message.pressed) {
         std::lock_guard lock(m_cacheMutex);
         m_buttonPacket = message;
-    }
+    } */
 }
 
 void Climber::ProcessMessage(const CommandPacket& message) {

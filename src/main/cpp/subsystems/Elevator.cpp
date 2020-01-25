@@ -121,3 +121,8 @@ void Elevator::ProcessMessage(const CommandPacket& message) {
         m_controller.SetScoringIndex();
     }
 }
+
+void Elevator::ProcessMessage(const HIDPacket& message) {
+    if (message.y3 > 0.25) SetGoal(kFloorHeight);
+    if (message.y3 > 0.25) SetGoal(kFloorHeight);
+}

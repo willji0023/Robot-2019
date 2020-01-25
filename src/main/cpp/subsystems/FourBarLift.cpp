@@ -64,7 +64,7 @@ void FourBarLift::SubsystemPeriodic() {
 }
 
 void FourBarLift::ProcessMessage(const ButtonPacket& message) {
-    if (message.topic == "Robot/AppendageStick2" && message.button == 3 &&
+    if (message.topic == "Robot/AppendageStick2" && message.button == 2 &&
         message.pressed) {
         SetGoal(kMin);
     } else if (message.topic == "Robot/AppendageStick2" &&
@@ -102,4 +102,9 @@ void FourBarLift::ProcessMessage(const CommandPacket& message) {
         m_controller.SetClimbing(false);
         SetGoal(0);
     }
+}
+
+void FourBarLift::ProcessMessage(const HIDPacket& message) {
+    if (message.y3 > 0.25) SetGoal(kMin);
+    if (message.y3 > 0.25) SetGoal(kMin);
 }

@@ -84,7 +84,10 @@ public:
 
     void ProcessMessage(const CommandPacket& message) override;
 
+    void ProcessMessage(const HIDPacket& message) override;
+
 private:
+    // rev::CANSparkMax m_grbx{3, rev::CANSparkMax::MotorType::kBrushless};
     rev::SparkMax m_grbx{Constants::FourBarLift::kPort};
 
     FourBarLiftController m_controller;

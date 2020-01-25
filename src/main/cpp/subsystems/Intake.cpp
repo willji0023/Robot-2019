@@ -23,17 +23,17 @@ void Intake::SetMotors(MotorState motorState) {
 void Intake::ToggleClaw() { m_claw.Set(!m_claw.Get()); }
 
 void Intake::ProcessMessage(const ButtonPacket& message) {
-    if (message.topic == "Robot/AppendageStick2" && message.button == 4 &&
+    if (message.topic == "Robot/AppendageStick2" && message.button == 6 &&
         message.pressed) {
         SetMotors(MotorState::kOuttake);
     } else if (message.topic == "Robot/AppendageStick2" &&
-               message.button == 6 && message.pressed) {
+               message.button == 4 && message.pressed) {
         SetMotors(MotorState::kIntake);
     } else if (message.topic == "Robot/AppendageStick2" &&
-               message.button == 4 && !message.pressed) {
+               message.button == 6 && !message.pressed) {
         SetMotors(MotorState::kIdle);
     } else if (message.topic == "Robot/AppendageStick2" &&
-               message.button == 6 && !message.pressed) {
+               message.button == 4 && !message.pressed) {
         SetMotors(MotorState::kIdle);
     } else if (message.topic == "Robot/AppendageStick2" &&
                message.button == 1 && message.pressed) {
