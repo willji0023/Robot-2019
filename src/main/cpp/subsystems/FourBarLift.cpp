@@ -64,25 +64,19 @@ void FourBarLift::SubsystemPeriodic() {
 }
 
 void FourBarLift::ProcessMessage(const ButtonPacket& message) {
-    if (message.topic == "Robot/AppendageStick2" && message.button == 3 &&
-        message.pressed) {
-        SetGoal(kMin);
-    } else if (message.topic == "Robot/AppendageStick2" &&
-               message.button == 2 && message.pressed) {
-        SetGoal(kMax);
-    } else if (message.topic == "Robot/AppendageStick" &&
+    if (message.topic == "Robot/AppendageStick" &&
                message.button == 11 && message.pressed) {
         SetGoal(kBottomHatch);
-    } else if (message.topic == "Robot/DriveStick2" && message.button == 7 &&
+    } else if (message.topic == "Robot/DriveStick" && message.button == 7 &&
                message.pressed) {
         m_controller.SetClimbing(true);
-    } else if (message.topic == "Robot/DriveStick2" && message.button == 8 &&
+    } else if (message.topic == "Robot/DriveStick" && message.button == 8 &&
                message.pressed) {
         m_controller.SetClimbing(false);
     } else if (message.topic == "Robot/AppendageStick" && message.pressed) {
         if (message.button == 12 || message.button == 9 ||
             message.button == 10 || message.button == 7 ||
-            message.button == 8) {
+            message.button == 8  || message.button == 2) {
             SetGoal(kMax);
         }
     }
@@ -103,3 +97,9 @@ void FourBarLift::ProcessMessage(const CommandPacket& message) {
         SetGoal(0);
     }
 }
+
+void FourBarLift::ProcessMessage(const HIDPacket& message) {
+    if (message.y3 == -1.0) SetGoal(kMin);
+    if (message.y3 == 1.0) SetGoal(kMax);
+}
+

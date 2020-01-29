@@ -74,7 +74,7 @@ void Elevator::SubsystemPeriodic() {
 }
 
 void Elevator::ProcessMessage(const ButtonPacket& message) {
-    if (message.topic == "Robot/AppendageStick2" && message.button == 3 &&
+    if (message.topic == "Robot/AppendageStick" && message.button == 3 &&
         message.pressed) {
         SetGoal(kFloorHeight);
     } else if (message.topic == "Robot/AppendageStick" &&
@@ -120,4 +120,10 @@ void Elevator::ProcessMessage(const CommandPacket& message) {
     } else if (message.topic == "Climber/ScoringProfile") {
         m_controller.SetScoringIndex();
     }
+}
+
+void Elevator::ProcessMessage(const HIDPacket& message) {
+    if (message.y3 == 1) SetGoal(kMin);
+    if (message.y3 == -1) SetGoal(kMin);
+
 }
