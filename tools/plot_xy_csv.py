@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Finds latest versions of the CSVs for each subsystem, then plots the data."""
+"""Finds latest versions of the drivetrain CSV and create an plot of y vs x."""
 import matplotlib.pyplot as plt
 import numpy as np
 import os
